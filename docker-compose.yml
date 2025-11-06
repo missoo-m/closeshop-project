@@ -1,0 +1,31 @@
+version: "3.9"
+
+services:
+  api:
+    build: .
+    ports:
+      - "8080:8080"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/products
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: 1234
+
+  postgres:
+    image: postgres:15-alpine
+    environment:
+      POSTGRES_DB: products
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 1234
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U dytni -d products"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+volumes:
+  postgres_data:

@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Users</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #667eea;
+            --primary-dark: #5a6fd8;
+            --secondary: #764ba2;
+            --success: #10b981;
+            --danger: #ef4444;
+            --warning: #f59e0b;
+            --light: #f8fafc;
+            --dark: #1e293b;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .header-section {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            border-radius: 20px;
+            padding: 40px 30px;
+            margin-bottom: 30px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        .glass-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            margin-bottom: 30px;
+        }
+
+        .table-modern {
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .table-modern thead th {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            border: none;
+            padding: 20px;
+            font-weight: 600;
+            font-size: 1rem;
+        }
+
+        .table-modern tbody td {
+            padding: 20px;
+            border-color: #f1f5f9;
+            vertical-align: middle;
+            font-weight: 500;
+        }
+
+        .table-modern tbody tr {
+            transition: all 0.3s ease;
+        }
+
+        .table-modern tbody tr:hover {
+            background-color: #f8fafc;
+            transform: translateX(5px);
+        }
+
+        .role-badge {
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 0.85rem;
+        }
+
+        .role-admin {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+        }
+
+        .role-user {
+            background: linear-gradient(135deg, var(--success), #34d399);
+            color: white;
+        }
+
+        .role-super {
+            background: linear-gradient(135deg, var(--warning), #fbbf24);
+            color: white;
+        }
+
+        .create-user-section {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+        }
+
+        .form-control-modern {
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 15px 20px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            background: rgba(255, 255, 255, 0.9);
+            height: auto;
+            min-height: 55px;
+            line-height: 1.5;
+        }
+
+        select.form-control-modern {
+            height: 55px;
+            padding-top: 12px;
+            padding-bottom: 12px;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+            background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2364748b' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+            background-repeat: no-repeat;
+            background-position: right 15px center;
+            background-size: 16px;
+            padding-right: 45px;
+        }
+
+        .form-control-modern option {
+            padding: 15px 20px;
+            font-size: 15px;
+            line-height: 1.5;
+            min-height: 50px;
+            border-bottom: 1px solid #f1f5f9;
+        }
+
+        .btn-modern {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            border: none;
+            border-radius: 12px;
+            padding: 15px 25px;
+            color: white;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+            font-size: 16px;
+            height: 55px;
+        }
+
+        .btn-modern:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+            color: white;
+        }
+
+        .btn-outline-modern {
+            border: 2px solid var(--primary);
+            border-radius: 12px;
+            padding: 12px 25px;
+            color: var(--primary);
+            font-weight: 600;
+            transition: all 0.3s ease;
+            background: transparent;
+        }
+
+        .btn-outline-modern:hover {
+            background: var(--primary);
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        .section-title {
+            color: var(--dark);
+            font-weight: 700;
+            margin-bottom: 25px;
+            position: relative;
+            font-size: 1.5rem;
+        }
+
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: -8px;
+            left: 0;
+            width: 50px;
+            height: 3px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            border-radius: 2px;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+            border-left: 4px solid var(--primary);
+        }
+
+        .stat-number {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--dark);
+            margin-bottom: 5px;
+        }
+
+        .stat-label {
+            color: var(--gray);
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+
+        .password-mask {
+            font-family: 'Courier New', monospace;
+            letter-spacing: 2px;
+        }
+
+        /* Увеличенные labels */
+        .form-group label {
+            font-weight: 600;
+            font-size: 16px;
+            margin-bottom: 10px;
+            color: var(--dark);
+            display: block;
+        }
+
+        /* Увеличенные отступы между полями */
+        .form-row .form-group {
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="header-section">
+        <h1 class="display-4 font-weight-bold mb-3">
+            <i class="fas fa-users me-3"></i>User Management
+        </h1>
+        <p class="lead mb-4">Manage all users in the system</p>
+    </div>
+
+    <div class="glass-card p-4 mb-4">
+        <h3 class="section-title">
+            <i class="fas fa-chart-bar me-2"></i>User Statistics
+        </h3>
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-number" th:text="${#lists.size(users)}">0</div>
+                <div class="stat-label">Total Users</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" th:text="${#lists.size(users.?[role == 'ROLE_ADMIN'])}">0</div>
+                <div class="stat-label">Administrators</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" th:text="${#lists.size(users.?[role == 'ROLE_USER'])}">0</div>
+                <div class="stat-label">Regular Users</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="glass-card p-4 mb-4">
+        <h3 class="section-title">
+            <i class="fas fa-list me-2"></i>All Users
+        </h3>
+        <div class="table-responsive">
+            <table class="table table-modern">
+                <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Username</th>
+                    <th>Password</th>
+                    <th>Role</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="user : ${users}">
+                    <td th:text="${user.id}" class="font-weight-bold text-primary"></td>
+                    <td th:text="${user.username}" class="font-weight-bold"></td>
+                    <td>
+                        <span class="password-mask">••••••••</span>
+                        <small class="text-muted ml-2" th:text="${user.password}"></small>
+                    </td>
+                    <td>
+                        <span th:if="${user.role == 'ROLE_ADMIN'}"
+                              class="role-badge role-admin">
+                            <i class="fas fa-crown me-1"></i>Administrator
+                        </span>
+                        <span th:if="${user.role == 'ROLE_USER'}"
+                              class="role-badge role-user">
+                            <i class="fas fa-user me-1"></i>User
+                        </span>
+                        <span th:if="${user.role == 'ROLE_ADMIN, ROLE_USER'}"
+                              class="role-badge role-super">
+                            <i class="fas fa-star me-1"></i>Super Admin
+                        </span>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="create-user-section">
+        <h3 class="section-title">
+            <i class="fas fa-user-plus me-2"></i>Create New User
+        </h3>
+        <form action="/user/create" method="post">
+            <div class="form-row">
+                <div class="form-group col-md-3">
+                    <label for="username" class="font-weight-bold text-dark">Username</label>
+                    <input type="text" name="username" id="username" class="form-control form-control-modern"
+                           placeholder="Enter username" required>
+                </div>
+                <div class="form-group col-md-3">
+                    <label for="password" class="font-weight-bold text-dark">Password</label>
+                    <input type="text" name="password" id="password" class="form-control form-control-modern"
+                           placeholder="Enter password" required>
+                </div>
+                <div class="form-group col-md-3">
+                    <label for="role" class="font-weight-bold text-dark">Role</label>
+                    <select name="role" id="role" class="form-control form-control-modern">
+                        <option value="ROLE_ADMIN">Administrator</option>
+                        <option value="ROLE_USER">Regular User</option>
+                        <option value="ROLE_ADMIN, ROLE_USER">Super Administrator</option>
+                    </select>
+                </div>
+                <div class="form-group col-md-3 d-flex align-items-end">
+                    <button type="submit" class="btn btn-modern w-100">
+                        <i class="fas fa-plus me-2"></i>Add User
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <div class="text-center mt-4">
+        <a href="/user/info" class="btn btn-outline-modern">
+            <i class="fas fa-arrow-left me-2"></i>Back to User Info
+        </a>
+    </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+<script src="/js/pusheen.js"></script>
+
+</body>
+</html>

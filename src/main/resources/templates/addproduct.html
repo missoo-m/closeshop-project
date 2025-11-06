@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Admin Products</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #667eea;
+            --primary-dark: #5a6fd8;
+            --secondary: #764ba2;
+            --success: #10b981;
+            --danger: #ef4444;
+            --warning: #f59e0b;
+            --light: #f8fafc;
+            --dark: #1e293b;
+            --gray: #64748b;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .glass-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+
+        .container {
+            max-width: 1200px;
+        }
+
+        .header-section {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        .btn-modern {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            border: none;
+            border-radius: 12px;
+            padding: 12px 25px;
+            color: white;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+        }
+
+        .btn-modern:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+            color: white;
+        }
+
+        .form-control-modern {
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 15px 20px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            background: rgba(255, 255, 255, 0.9);
+            height: auto;
+            min-height: 55px;
+            line-height: 1.5;
+        }
+
+        select.form-control-modern {
+            height: 55px;
+            padding-top: 12px;
+            padding-bottom: 12px;
+        }
+
+        .form-control-modern:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .form-control-modern option {
+            padding: 12px 15px;
+            font-size: 15px;
+            line-height: 1.5;
+            min-height: 40px;
+        }
+        .table-modern {
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .table-modern thead th {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            border: none;
+            padding: 15px;
+            font-weight: 600;
+        }
+
+        .table-modern tbody td {
+            padding: 15px;
+            border-color: #f1f5f9;
+            vertical-align: middle;
+        }
+
+        .table-modern tbody tr:hover {
+            background-color: #f8fafc;
+        }
+
+        .section-title {
+            color: var(--dark);
+            font-weight: 700;
+            margin-bottom: 25px;
+            position: relative;
+        }
+
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: -8px;
+            left: 0;
+            width: 50px;
+            height: 3px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            border-radius: 2px;
+        }
+
+        .action-buttons .btn {
+            margin: 0 3px;
+            border-radius: 8px;
+            font-weight: 500;
+        }
+
+        .form-group label {
+            font-weight: 600;
+            font-size: 16px;
+            margin-bottom: 10px;
+            color: var(--dark);
+            display: block;
+        }
+
+        .form-row .form-group {
+            margin-bottom: 20px;
+        }
+
+        select {
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+            background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2364748b' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+            background-repeat: no-repeat;
+            background-position: right 15px center;
+            background-size: 16px;
+            padding-right: 45px;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="header-section text-center">
+        <h1 class="display-4 font-weight-bold mb-3">
+            <i class="fas fa-cogs me-3"></i>Admin Products
+        </h1>
+        <p class="lead mb-4">Manage your product catalog with ease</p>
+        <a href="/products" class="btn btn-light btn-lg rounded-pill px-4">
+            <i class="fas fa-eye me-2"></i>View Products
+        </a>
+    </div>
+
+    <div class="glass-card p-4 mb-4">
+        <h3 class="section-title">
+            <i class="fas fa-plus-circle me-2"></i>Create New Product
+        </h3>
+        <form action="/products/create" method="post">
+            <div class="form-group">
+                <label for="productName" class="font-weight-bold text-dark">Product Name</label>
+                <input type="text" name="name" id="productName" class="form-control form-control-modern"
+                       placeholder="Enter product name" required>
+            </div>
+            <div class="form-row">
+                <div class="form-group col-md-4">
+                    <label for="productSize" class="font-weight-bold text-dark">Size</label>
+                    <select name="size" id="productSize" class="form-control form-control-modern">
+                        <option value="xs">XS - Extra Small</option>
+                        <option value="s">S - Small</option>
+                        <option value="m">M - Medium</option>
+                        <option value="l">L - Large</option>
+                        <option value="xl">XL - Extra Large</option>
+                    </select>
+                </div>
+                <div class="form-group col-md-4">
+                    <label for="productType" class="font-weight-bold text-dark">Type</label>
+                    <select name="type" id="productType" class="form-control form-control-modern">
+                        <option value="PANTS">Pants</option>
+                        <option value="SHORTS">Shorts</option>
+                        <option value="SNEAKERS">Sneakers</option>
+                        <option value="LONGSLEEVE">Longsleeve</option>
+                    </select>
+                </div>
+                <div class="form-group col-md-4">
+                    <label for="productCoast" class="font-weight-bold text-dark">Price ($)</label>
+                    <input type="number" name="coast" id="productCoast" class="form-control form-control-modern"
+                           placeholder="0.00" step="0.01" min="0" required>
+                </div>
+            </div>
+            <button type="submit" class="btn btn-modern">
+                <i class="fas fa-plus me-2"></i>Add Product
+            </button>
+        </form>
+    </div>
+
+    <div class="glass-card p-4">
+        <h3 class="section-title">
+            <i class="fas fa-list me-2"></i>Manage Products
+        </h3>
+        <div class="table-responsive">
+            <table class="table table-modern">
+                <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Size</th>
+                    <th>Type</th>
+                    <th>Price</th>
+                    <th>Actions</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="product : ${products}">
+                    <td th:text="${product.name}" class="font-weight-bold"></td>
+                    <td th:text="${product.size}" class="text-uppercase"></td>
+                    <td th:text="${product.type}"></td>
+                    <td class="text-success font-weight-bold">$<span th:text="${product.coast}"></span></td>
+                    <td class="action-buttons">
+                        <form th:action="@{/products/delete/{id}(id=${product.id})}" method="post" style="display:inline;">
+                            <button type="submit" class="btn btn-danger btn-sm">
+                                <i class="fas fa-trash me-1"></i>Delete
+                            </button>
+                        </form>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="text-center mt-4">
+        <a href="/user/info" class="btn btn-outline-dark rounded-pill px-4">
+            <i class="fas fa-arrow-left me-2"></i>Back to User Info
+        </a>
+    </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+<script src="/js/pusheen.js"></script>
+</body>
+</html>

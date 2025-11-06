@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>User Details</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #667eea;
+            --primary-dark: #5a6fd8;
+            --secondary: #764ba2;
+            --success: #10b981;
+            --danger: #ef4444;
+            --warning: #f59e0b;
+            --light: #f8fafc;
+            --dark: #1e293b;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .user-container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .user-header {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            border-radius: 20px;
+            padding: 40px 30px;
+            margin-bottom: 30px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .user-header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.1);
+            transform: rotate(30deg);
+        }
+
+        .user-avatar {
+            width: 100px;
+            height: 100px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+            font-size: 2.5rem;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .glass-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            margin-bottom: 25px;
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .info-item {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+            border: 1px solid #f1f5f9;
+            transition: all 0.3s ease;
+        }
+
+        .info-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .info-label {
+            color: #64748b;
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin-bottom: 5px;
+            display: block;
+        }
+
+        .info-value {
+            color: #1e293b;
+            font-size: 1.1rem;
+            font-weight: 700;
+        }
+
+        .cart-item {
+            display: flex;
+            justify-content: between;
+            align-items: center;
+            padding: 20px;
+            border-bottom: 1px solid #f1f5f9;
+            transition: all 0.3s ease;
+        }
+
+        .cart-item:hover {
+            background: #f8fafc;
+        }
+
+        .cart-item:last-child {
+            border-bottom: none;
+        }
+
+        .product-info {
+            flex-grow: 1;
+        }
+
+        .product-name {
+            font-weight: 600;
+            color: var(--dark);
+            margin-bottom: 5px;
+        }
+
+        .product-details {
+            color: #64748b;
+            font-size: 0.9rem;
+        }
+
+        .product-price {
+            font-weight: 700;
+            color: var(--success);
+            font-size: 1.1rem;
+            margin-right: 20px;
+        }
+
+        .total-section {
+            background: linear-gradient(135deg, var(--success), #34d399);
+            color: white;
+            border-radius: 15px;
+            padding: 25px;
+            text-align: center;
+        }
+
+        .total-amount {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin: 10px 0;
+        }
+
+        .btn-modern {
+            background: rgba(255, 255, 255, 0.2);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 12px;
+            padding: 12px 25px;
+            color: white;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+        }
+
+        .btn-modern:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
+            color: white;
+        }
+
+        .btn-buy {
+            background: white;
+            border: none;
+            border-radius: 12px;
+            padding: 15px 30px;
+            color: var(--success);
+            font-weight: 700;
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(255, 255, 255, 0.3);
+            width: 100%;
+            margin-top: 15px;
+        }
+
+        .btn-buy:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(255, 255, 255, 0.4);
+        }
+
+        .btn-remove {
+            background: linear-gradient(135deg, var(--danger), #f87171);
+            border: none;
+            border-radius: 8px;
+            padding: 8px 15px;
+            color: white;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .btn-remove:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
+        }
+
+        .section-title {
+            color: var(--dark);
+            font-weight: 700;
+            margin-bottom: 20px;
+            font-size: 1.3rem;
+            display: flex;
+            align-items: center;
+        }
+
+        .section-title i {
+            margin-right: 10px;
+            color: var(--primary);
+        }
+
+        .empty-cart {
+            text-align: center;
+            padding: 40px 20px;
+            color: #64748b;
+        }
+
+        .empty-cart i {
+            font-size: 3rem;
+            margin-bottom: 15px;
+            opacity: 0.5;
+        }
+    </style>
+</head>
+<body>
+<div class="user-container">
+    <div class="user-header">
+        <div class="user-avatar">
+            <i class="fas fa-user"></i>
+        </div>
+        <h1 class="display-5 font-weight-bold mb-3">User Profile</h1>
+        <p class="lead mb-0">Welcome to your personal dashboard</p>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-4 mb-4">
+            <div class="glass-card p-4 h-100">
+                <h3 class="section-title">
+                    <i class="fas fa-id-card"></i>User Information
+                </h3>
+                <div class="info-grid">
+                    <div class="info-item">
+                        <span class="info-label">User ID</span>
+                        <div class="info-value" th:text="${user.id}"></div>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">Username</span>
+                        <div class="info-value" th:text="${user.username}"></div>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">Password</span>
+                        <div class="info-value">
+                            <i class="fas fa-lock"></i> ••••••••
+                        </div>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">Role</span>
+                        <div class="info-value">
+                            <span class="badge badge-primary p-2"
+                                  style="background: linear-gradient(135deg, var(--primary), var(--secondary));">
+                                <span th:text="${user.role}"></span>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-8 mb-4">
+            <div class="glass-card">
+                <div class="p-4">
+                    <h3 class="section-title">
+                        <i class="fas fa-shopping-cart"></i>Shopping Cart
+                    </h3>
+                </div>
+
+                <div th:if="${not #lists.isEmpty(user.cart.products)}">
+                    <div th:each="product : ${user.cart.products}" class="cart-item">
+                        <div class="product-info">
+                            <div class="product-name" th:text="${product.name}"></div>
+                            <div class="product-details">
+                                Size: <span th:text="${product.size}"></span> •
+                                Type: <span th:text="${product.type}"></span>
+                            </div>
+                        </div>
+                        <div class="d-flex align-items-center">
+                            <div class="product-price">$<span th:text="${product.coast}"></span></div>
+                            <form th:action="@{/cart/delete/{id}(id=${product.id})}" method="post">
+                                <button type="submit" class="btn-remove">
+                                    <i class="fas fa-trash me-1"></i>Remove
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
+                <div th:if="${#lists.isEmpty(user.cart.products)}" class="empty-cart">
+                    <i class="fas fa-shopping-cart"></i>
+                    <h4>Your cart is empty</h4>
+                    <p>Start shopping to add items to your cart</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-12">
+            <div class="total-section">
+                <h4 class="mb-3">Total Amount</h4>
+                <div class="total-amount">$<span th:text="${user.cart.calculateTotalCost()}">0.00</span></div>
+                <p class="mb-4">Total for all items in your cart</p>
+
+                <form action="/cart/buy" method="post">
+                    <button type="submit" class="btn-buy" th:disabled="${#lists.isEmpty(user.cart.products)}">
+                        <i class="fas fa-credit-card me-2"></i>
+                        Complete Purchase
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="text-center mt-4">
+        <a href="/products" class="btn btn-modern me-3">
+            <i class="fas fa-arrow-left me-2"></i>Back to Products
+        </a>
+        <a href="/logout" class="btn btn-modern">
+            <i class="fas fa-sign-out-alt me-2"></i>Logout
+        </a>
+    </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+<script src="/js/pusheen.js"></script>
+
+</body>
+</html>

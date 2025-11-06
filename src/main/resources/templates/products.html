@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Product List</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #667eea;
+            --primary-dark: #5a6fd8;
+            --secondary: #764ba2;
+            --success: #10b981;
+            --info: #3b82f6;
+            --warning: #f59e0b;
+            --light: #f8fafc;
+            --dark: #1e293b;
+            --gray: #64748b;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .header-section {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header-section::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.1);
+            transform: rotate(30deg);
+        }
+
+        .glass-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn-modern {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            border: none;
+            border-radius: 12px;
+            padding: 12px 25px;
+            color: white;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+        }
+
+        .btn-modern:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+            color: white;
+        }
+
+        .btn-group-header {
+            position: absolute;
+            top: 30px;
+            right: 30px;
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn-group-header .btn {
+            border-radius: 12px;
+            padding: 10px 20px;
+            font-weight: 600;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            backdrop-filter: blur(10px);
+        }
+
+        .search-section {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 30px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+        }
+
+        .form-control-modern {
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 12px 20px;
+            transition: all 0.3s ease;
+            background: rgba(255, 255, 255, 0.9);
+        }
+
+        .form-control-modern:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 25px;
+            margin-top: 30px;
+        }
+
+        .product-card {
+            background: white;
+            border-radius: 20px;
+            padding: 25px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+            transition: all 0.3s ease;
+            border: 1px solid #f1f5f9;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .product-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+        }
+
+        .product-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
+        }
+
+        .product-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 15px;
+        }
+
+        .product-name {
+            font-weight: 700;
+            font-size: 1.3rem;
+            color: var(--dark);
+            margin-bottom: 5px;
+        }
+
+        .product-type {
+            color: var(--gray);
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        .product-size {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .product-price {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--success);
+            margin: 15px 0;
+        }
+
+        .product-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .product-actions .btn {
+            flex: 1;
+            border-radius: 10px;
+            padding: 10px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, var(--success), #34d399);
+            border: none;
+        }
+
+        .btn-info {
+            background: linear-gradient(135deg, var(--info), #60a5fa);
+            border: none;
+        }
+
+        .section-title {
+            color: var(--dark);
+            font-weight: 700;
+            margin-bottom: 25px;
+            position: relative;
+            font-size: 1.5rem;
+        }
+
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: -8px;
+            left: 0;
+            width: 50px;
+            height: 3px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            border-radius: 2px;
+        }
+
+        @media (max-width: 768px) {
+            .btn-group-header {
+                position: static;
+                justify-content: center;
+                margin-top: 20px;
+            }
+
+            .products-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="header-section">
+        <h1 class="display-5 font-weight-bold mb-3">
+            <i class="fas fa-shopping-bag me-3"></i>Our Products
+        </h1>
+        <p class="lead mb-4">Discover our amazing collection of fashion items</p>
+
+        <div class="btn-group-header">
+            <form action="/user/info" method="get" style="display:inline;">
+                <button type="submit" class="btn btn-light">
+                    <i class="fas fa-user me-2"></i>Profile
+                </button>
+            </form>
+            <form action="/login" method="get" style="display:inline;">
+                <button type="submit" class="btn btn-light">
+                    <i class="fas fa-sign-in-alt me-2"></i>Login
+                </button>
+            </form>
+            <form action="/logout" method="post" style="display:inline;">
+                <button type="submit" class="btn btn-warning">
+                    <i class="fas fa-sign-out-alt me-2"></i>Logout
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <div class="search-section">
+        <h3 class="section-title">
+            <i class="fas fa-search me-2"></i>Find Your Style
+        </h3>
+        <form action="/products" method="get" class="form-inline justify-content-between align-items-end">
+            <div class="form-group flex-grow-1 mr-3">
+                <label for="name" class="font-weight-bold text-dark mb-2">Search by name:</label>
+                <input type="text" name="name" id="name" class="form-control form-control-modern"
+                       placeholder="What are you looking for?">
+            </div>
+            <div class="d-flex gap-2">
+                <button type="submit" class="btn btn-modern">
+                    <i class="fas fa-search me-2"></i>Search
+                </button>
+                <a href="/products" class="btn btn-outline-primary rounded-pill px-4">
+                    <i class="fas fa-refresh me-2"></i>Reset
+                </a>
+            </div>
+        </form>
+    </div>
+
+    <div class="glass-card p-4">
+        <h3 class="section-title">
+            <i class="fas fa-grid me-2"></i>Product Collection
+        </h3>
+        <div class="products-grid">
+            <div class="product-card" th:each="product : ${products}">
+                <div class="product-header">
+                    <div class="flex-grow-1">
+                        <div class="product-name" th:text="${product.name}"></div>
+                        <div class="product-type" th:text="${product.type}"></div>
+                    </div>
+                    <div class="product-size" th:text="${product.size}"></div>
+                </div>
+
+                <div class="product-price">
+                    $<span th:text="${product.coast}"></span>
+                </div>
+
+                <div class="product-actions">
+                    <form th:action="@{/cart/add/{id}(id=${product.id})}" method="post" style="display:inline; flex: 1;">
+                        <button type="submit" class="btn btn-success">
+                            <i class="fas fa-cart-plus me-1"></i>Add
+                        </button>
+                    </form>
+                    <form th:action="@{/products/info/{id}(id=${product.id})}" method="get" style="display:inline; flex: 1;">
+                        <button type="submit" class="btn btn-info">
+                            <i class="fas fa-info me-1"></i>Details
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div th:if="${#lists.isEmpty(products)}" class="text-center py-5">
+            <i class="fas fa-search fa-3x text-muted mb-3"></i>
+            <h4 class="text-muted">No products found</h4>
+            <p class="text-muted">Try adjusting your search criteria</p>
+        </div>
+    </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+<script src="/js/pusheen.js"></script>
+
+</body>
+</html>
