@@ -3,7 +3,7 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
-                git 'https://github.com/dytni/finalProject.git'
+                git 'https://github.com/missoo-m/closeshop-project.git'
             }
         }
         stage('Build') {
