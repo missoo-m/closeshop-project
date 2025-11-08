@@ -13,7 +13,7 @@
 ## Установка
 1. Клонируйте репозиторий:
     ```bash
-    git clone https://github.com/dytni/finalProject.git
+    git clone https://github.com/missoo-m/closeshop-project.git
     ```
 2. Настройка базы данных:
 
