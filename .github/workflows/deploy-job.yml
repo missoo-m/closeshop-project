@@ -6,11 +6,9 @@ on:
 jobs:
   test:
     runs-on: macos-latest
-    steps: # Перечень шагов, которые необходимо выполнить в рамках джобы.
-      - name: cd into repo # Название шага
-        uses: actions/checkout@v3 # Ключевое слово uses используется для запуска заранее
-      # созданного набора команд. В данном случае используем дефолтную команду
-      # для обновления проекта до последнего коммита.
+    steps: 
+      - name: cd into repo 
+        uses: actions/checkout@v3 
       - name: set up Java and Maven # Настраиваем Java и Maven.
         uses: actions/setup-java@v3
         with:
@@ -18,7 +16,7 @@ jobs:
           distribution: 'temurin'
           cache: maven
       - name: run tests
-        run: mvn test # Запускаем тесты.
+        run: mvn test 
   deploy:
     runs-on: self-hosted
     needs: test
