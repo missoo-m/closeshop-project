@@ -27,8 +27,6 @@ jobs:
         run: |
           docker-compose down || true
           echo "Checking for processes on port 8080..."
-          lsof -ti :8080 | xargs kill || true
-          
           
           docker system prune -a -f
       - name: docker-compose deploy
