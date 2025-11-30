@@ -25,7 +25,9 @@ jobs:
         uses: actions/checkout@v3
       - name: prepare environment
         run: |
-          docker-compose down
+          docker-compose down || true
+          echo "Checking for processes on port 8080..."
+          lsof -ti :8080 | xargs kill || true
           docker system prune -a -f
       - name: docker-compose deploy
         run: docker-compose up -d
