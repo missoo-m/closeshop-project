@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Product Details</title>
+    <title>Информация о товаре</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
@@ -133,23 +133,23 @@
             <div class="product-icon">
                 <i class="fas fa-tag"></i>
             </div>
-            <h1 class="display-5 font-weight-bold">Product Details</h1>
-            <p class="lead mb-0">Complete information about the product</p>
+            <h1 class="display-5 font-weight-bold">Информация о товаре</h1>
+            <p class="lead mb-0">Полная информация о товаре</p>
         </div>
 
         <div class="product-body">
             <table class="info-table">
                 <tbody>
                 <tr>
-                    <th><i class="fas fa-hashtag me-2"></i>Product ID</th>
+                    <th><i class="fas fa-hashtag me-2"></i>ID товара</th>
                     <td th:text="${product.id}" class="font-weight-bold text-primary"></td>
                 </tr>
                 <tr>
-                    <th><i class="fas fa-cube me-2"></i>Product Name</th>
+                    <th><i class="fas fa-cube me-2"></i>Название товара</th>
                     <td th:text="${product.name}" class="font-weight-bold"></td>
                 </tr>
                 <tr>
-                    <th><i class="fas fa-expand me-2"></i>Size</th>
+                    <th><i class="fas fa-expand me-2"></i>Размер</th>
                     <td>
                         <span th:text="${product.size}" class="badge badge-primary p-2"
                               style="font-size: 1rem; background: linear-gradient(135deg, var(--primary), var(--secondary));">
@@ -157,9 +157,9 @@
                     </td>
                 </tr>
                 <tr>
-                    <th><i class="fas fa-dollar-sign me-2"></i>Price</th>
+                    <th><i class="fas fa-dollar-sign me-2"></i>Цена</th>
                     <td>
-                        <span class="price-tag">$<span th:text="${product.coast}"></span></span>
+                        <span class="price-tag"><span th:text="${product.coast}"></span> руб.</span>
                     </td>
                 </tr>
                 </tbody>
@@ -168,11 +168,11 @@
             <div class="text-center mt-5">
                 <form th:action="@{/cart/add/{id}(id=${product.id})}" method="post" style="display:inline;">
                     <button type="submit" class="btn btn-modern">
-                        <i class="fas fa-cart-plus me-2"></i>Add to Cart
+                        <i class="fas fa-cart-plus me-2"></i>В корзину
                     </button>
                 </form>
                 <a href="/products" class="btn btn-outline-modern">
-                    <i class="fas fa-arrow-left me-2"></i>Back to Products
+                    <i class="fas fa-arrow-left me-2"></i>Назад к товарам
                 </a>
             </div>
         </div>

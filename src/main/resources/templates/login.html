@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Login</title>
+    <title>Вход</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
@@ -151,37 +151,37 @@
         <div class="login-icon">
             <i class="fas fa-lock"></i>
         </div>
-        <h1 class="login-title">Welcome Back</h1>
-        <p class="login-subtitle">Sign in to your account to continue</p>
+        <h1 class="login-title">Добро пожаловать</h1>
+        <p class="login-subtitle">Войдите в свой аккаунт, чтобы продолжить</p>
     </div>
 
     <form action="/login" method="post">
         <div class="form-group">
-            <label for="username" class="form-label">Username</label>
+            <label for="username" class="form-label">Имя пользователя</label>
             <div class="input-icon">
                 <i class="fas fa-user"></i>
                 <input type="text" id="username" name="username" class="form-control form-control-modern"
-                       placeholder="Enter your username" required>
+                       placeholder="Введите имя пользователя" required>
             </div>
         </div>
 
         <div class="form-group">
-            <label for="password" class="form-label">Password</label>
+            <label for="password" class="form-label">Пароль</label>
             <div class="input-icon">
                 <i class="fas fa-key"></i>
                 <input type="password" id="password" name="password" class="form-control form-control-modern"
-                       placeholder="Enter your password" required>
+                       placeholder="Введите пароль" required>
             </div>
         </div>
 
         <button type="submit" class="btn btn-login">
-            <i class="fas fa-sign-in-alt me-2"></i>Sign In
+            <i class="fas fa-sign-in-alt me-2"></i>Войти
         </button>
     </form>
 
     <form action="/user/signup" method="get">
         <button type="submit" class="btn btn-signup">
-            <i class="fas fa-user-plus me-2"></i>Create Account
+            <i class="fas fa-user-plus me-2"></i>Создать аккаунт
         </button>
     </form>
 </div>

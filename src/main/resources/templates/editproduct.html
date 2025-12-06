@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Редактировать товар</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #667eea;
+            --primary-dark: #5a6fd8;
+            --secondary: #764ba2;
+            --success: #10b981;
+            --danger: #ef4444;
+            --warning: #f59e0b;
+            --light: #f8fafc;
+            --dark: #1e293b;
+            --gray: #64748b;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .glass-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+
+        .container {
+            max-width: 800px;
+        }
+
+        .header-section {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        .btn-modern {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            border: none;
+            border-radius: 12px;
+            padding: 12px 25px;
+            color: white;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+        }
+
+        .btn-modern:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+            color: white;
+        }
+
+        .btn-outline-modern {
+            border: 2px solid var(--primary);
+            border-radius: 12px;
+            padding: 12px 25px;
+            color: var(--primary);
+            font-weight: 600;
+            transition: all 0.3s ease;
+            background: transparent;
+        }
+
+        .btn-outline-modern:hover {
+            background: var(--primary);
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        .form-control-modern {
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 15px 20px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            background: rgba(255, 255, 255, 0.9);
+            height: auto;
+            min-height: 55px;
+            line-height: 1.5;
+        }
+
+        select.form-control-modern {
+            height: 55px;
+            padding-top: 12px;
+            padding-bottom: 12px;
+        }
+
+        .form-control-modern:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .form-control-modern option {
+            padding: 12px 15px;
+            font-size: 15px;
+            line-height: 1.5;
+            min-height: 40px;
+        }
+
+        .section-title {
+            color: var(--dark);
+            font-weight: 700;
+            margin-bottom: 25px;
+            position: relative;
+        }
+
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: -8px;
+            left: 0;
+            width: 50px;
+            height: 3px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            border-radius: 2px;
+        }
+
+        .form-group label {
+            font-weight: 600;
+            font-size: 16px;
+            margin-bottom: 10px;
+            color: var(--dark);
+            display: block;
+        }
+
+        .form-row .form-group {
+            margin-bottom: 20px;
+        }
+
+        select {
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+            background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2364748b' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+            background-repeat: no-repeat;
+            background-position: right 15px center;
+            background-size: 16px;
+            padding-right: 45px;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="header-section text-center">
+        <h1 class="display-4 font-weight-bold mb-3">
+            <i class="fas fa-edit me-3"></i>Редактировать товар
+        </h1>
+        <p class="lead mb-4">Обновите информацию о товаре</p>
+    </div>
+
+    <div class="glass-card p-4 mb-4">
+        <h3 class="section-title">
+            <i class="fas fa-pencil-alt me-2"></i>Редактировать детали товара
+        </h3>
+        <form th:action="@{/products/update/{id}(id=${product.id})}" method="post">
+            <div class="form-group">
+                <label for="productName" class="font-weight-bold text-dark">Название товара</label>
+                <input type="text" name="name" id="productName" class="form-control form-control-modern"
+                       th:value="${product.name}" placeholder="Введите название товара" required>
+            </div>
+            <div class="form-row">
+                <div class="form-group col-md-4">
+                    <label for="productSize" class="font-weight-bold text-dark">Размер</label>
+                    <select name="size" id="productSize" class="form-control form-control-modern">
+                        <option value="xs" th:selected="${product.size == 'xs'}">XS - Очень маленький</option>
+                        <option value="s" th:selected="${product.size == 's'}">S - Маленький</option>
+                        <option value="m" th:selected="${product.size == 'm'}">M - Средний</option>
+                        <option value="l" th:selected="${product.size == 'l'}">L - Большой</option>
+                        <option value="xl" th:selected="${product.size == 'xl'}">XL - Очень большой</option>
+                    </select>
+                </div>
+                <div class="form-group col-md-4">
+                    <label for="productType" class="font-weight-bold text-dark">Тип</label>
+                    <select name="type" id="productType" class="form-control form-control-modern">
+                        <option value="PANTS" th:selected="${product.type == 'PANTS'}">Брюки</option>
+                        <option value="SHORTS" th:selected="${product.type == 'SHORTS'}">Шорты</option>
+                        <option value="JEANS" th:selected="${product.type == 'JEANS'}">Джинсы</option>
+                        <option value="T-SHIRT" th:selected="${product.type == 'T-SHIRT'}">Футболка</option>
+                        <option value="SHIRT" th:selected="${product.type == 'SHIRT'}">Рубашка</option>
+                        <option value="LONGSLEEVE" th:selected="${product.type == 'LONGSLEEVE'}">Длинный рукав</option>
+                        <option value="SWEATER" th:selected="${product.type == 'SWEATER'}">Свитер</option>
+                        <option value="HOODIE" th:selected="${product.type == 'HOODIE'}">Толстовка</option>
+                        <option value="DRESS" th:selected="${product.type == 'DRESS'}">Платье</option>
+                        <option value="SKIRT" th:selected="${product.type == 'SKIRT'}">Юбка</option>
+                        <option value="JACKET" th:selected="${product.type == 'JACKET'}">Куртка</option>
+                        <option value="COAT" th:selected="${product.type == 'COAT'}">Пальто</option>
+                        <option value="SNEAKERS" th:selected="${product.type == 'SNEAKERS'}">Кроссовки</option>
+                        <option value="BOOTS" th:selected="${product.type == 'BOOTS'}">Ботинки</option>
+                        <option value="CAP" th:selected="${product.type == 'CAP'}">Головной убор</option>
+                    </select>
+                </div>
+                <div class="form-group col-md-4">
+                    <label for="productCoast" class="font-weight-bold text-dark">Цена (руб.)</label>
+                    <input type="number" name="coast" id="productCoast" class="form-control form-control-modern"
+                           th:value="${product.coast}" placeholder="0.00" step="0.01" min="0" required>
+                </div>
+            </div>
+            <div class="d-flex">
+                <button type="submit" class="btn btn-modern mr-2">
+                    <i class="fas fa-save me-2"></i>Обновить товар
+                </button>
+                <a href="/products/add" class="btn btn-outline-modern">
+                    <i class="fas fa-times me-2"></i>Отмена
+                </a>
+            </div>
+        </form>
+    </div>
+
+    <div class="text-center mt-4">
+        <a href="/products/add" class="btn btn-outline-light rounded-pill px-4">
+            <i class="fas fa-arrow-left me-2"></i>Назад к товарам
+        </a>
+    </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+<script src="/js/pusheen.js"></script>
+</body>
+</html>
+

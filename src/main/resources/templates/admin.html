@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Admin Dashboard</title>
+    <title>Панель администратора</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
@@ -105,26 +105,26 @@
         <div class="user-avatar">
             <i class="fas fa-user-shield"></i>
         </div>
-        <h1 class="display-4 font-weight-bold mb-3">Admin Dashboard</h1>
-        <p class="lead mb-0">Welcome back, Administrator!</p>
+        <h1 class="display-4 font-weight-bold mb-3">Панель администратора</h1>
+        <p class="lead mb-0">С возвращением, администратор!</p>
     </div>
 
     <div class="row">
         <div class="col-lg-6 mb-4">
             <div class="glass-card p-4 h-100">
                 <h3 class="font-weight-bold text-dark mb-4">
-                    <i class="fas fa-user-circle me-2"></i>Admin Information
+                    <i class="fas fa-user-circle me-2"></i>Информация администратора
                 </h3>
                 <div class="info-item">
                     <strong><i class="fas fa-id-card me-2"></i>ID:</strong>
                     <span class="float-right" th:text="${user.id}"></span>
                 </div>
                 <div class="info-item">
-                    <strong><i class="fas fa-user me-2"></i>Username:</strong>
+                    <strong><i class="fas fa-user me-2"></i>Имя пользователя:</strong>
                     <span class="float-right" th:text="${user.username}"></span>
                 </div>
                 <div class="info-item">
-                    <strong><i class="fas fa-shield-alt me-2"></i>Role:</strong>
+                    <strong><i class="fas fa-shield-alt me-2"></i>Роль:</strong>
                     <span class="float-right badge badge-primary" th:text="${user.role}"></span>
                 </div>
             </div>
@@ -133,14 +133,14 @@
         <div class="col-lg-6 mb-4">
             <div class="glass-card p-4 h-100">
                 <h3 class="font-weight-bold text-dark mb-4">
-                    <i class="fas fa-cogs me-2"></i>Quick Actions
+                    <i class="fas fa-cogs me-2"></i>Быстрые действия
                 </h3>
                 <div class="action-grid">
                     <a href="/user/show" class="btn btn-modern">
-                        <i class="fas fa-users me-2"></i>Manage Users
+                        <i class="fas fa-users me-2"></i>Управление пользователями
                     </a>
                     <a href="/products/add" class="btn btn-modern">
-                        <i class="fas fa-plus me-2"></i>Add Product
+                        <i class="fas fa-plus me-2"></i>Добавить товар
                     </a>
                 </div>
             </div>
@@ -149,10 +149,10 @@
 
     <div class="text-center mt-4">
         <a href="/products" class="btn btn-light rounded-pill px-4 me-3">
-            <i class="fas fa-arrow-left me-2"></i>Back to Products
+            <i class="fas fa-arrow-left me-2"></i>Назад к товарам
         </a>
         <a href="/logout" class="btn btn-outline-light rounded-pill px-4">
-            <i class="fas fa-sign-out-alt me-2"></i>Logout
+            <i class="fas fa-sign-out-alt me-2"></i>Выход
         </a>
     </div>
 </div>

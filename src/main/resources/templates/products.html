@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Product List</title>
+    <title>Список товаров</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
@@ -102,6 +102,11 @@
             padding: 12px 20px;
             transition: all 0.3s ease;
             background: rgba(255, 255, 255, 0.9);
+        }
+
+        select.form-control-modern {
+            height: auto;
+            padding: 12px 40px 12px 20px;
         }
 
         .form-control-modern:focus {
@@ -238,24 +243,24 @@
 <div class="container">
     <div class="header-section">
         <h1 class="display-5 font-weight-bold mb-3">
-            <i class="fas fa-shopping-bag me-3"></i>Our Products
+            <i class="fas fa-shopping-bag me-3"></i>Наши товары
         </h1>
-        <p class="lead mb-4">Discover our amazing collection of fashion items</p>
+        <p class="lead mb-4">Откройте для себя нашу удивительную коллекцию модных товаров</p>
 
         <div class="btn-group-header">
             <form action="/user/info" method="get" style="display:inline;">
                 <button type="submit" class="btn btn-light">
-                    <i class="fas fa-user me-2"></i>Profile
+                    <i class="fas fa-user me-2"></i>Профиль
                 </button>
             </form>
             <form action="/login" method="get" style="display:inline;">
                 <button type="submit" class="btn btn-light">
-                    <i class="fas fa-sign-in-alt me-2"></i>Login
+                    <i class="fas fa-sign-in-alt me-2"></i>Вход
                 </button>
             </form>
             <form action="/logout" method="post" style="display:inline;">
                 <button type="submit" class="btn btn-warning">
-                    <i class="fas fa-sign-out-alt me-2"></i>Logout
+                    <i class="fas fa-sign-out-alt me-2"></i>Выход
                 </button>
             </form>
         </div>
@@ -263,28 +268,39 @@
 
     <div class="search-section">
         <h3 class="section-title">
-            <i class="fas fa-search me-2"></i>Find Your Style
+            <i class="fas fa-search me-2"></i>Найти свой стиль
         </h3>
-        <form action="/products" method="get" class="form-inline justify-content-between align-items-end">
-            <div class="form-group flex-grow-1 mr-3">
-                <label for="name" class="font-weight-bold text-dark mb-2">Search by name:</label>
-                <input type="text" name="name" id="name" class="form-control form-control-modern"
-                       placeholder="What are you looking for?">
-            </div>
-            <div class="d-flex gap-2">
-                <button type="submit" class="btn btn-modern">
-                    <i class="fas fa-search me-2"></i>Search
-                </button>
-                <a href="/products" class="btn btn-outline-primary rounded-pill px-4">
-                    <i class="fas fa-refresh me-2"></i>Reset
-                </a>
+        <form id="searchForm" action="/products" method="get">
+            <div class="form-row align-items-end">
+                <div class="form-group col-md-5">
+                    <label for="name" class="font-weight-bold text-dark mb-2">Поиск по названию:</label>
+                    <input type="text" name="name" id="name" class="form-control form-control-modern"
+                           th:value="${currentName}"
+                           placeholder="Начните вводить для поиска...">
+                    <small class="text-muted">Поиск автоматически обновляется при вводе</small>
+                </div>
+                <div class="form-group col-md-4">
+                    <label for="sort" class="font-weight-bold text-dark mb-2">Сортировка:</label>
+                    <select name="sort" id="sort" class="form-control form-control-modern">
+                        <option value="">-- Без сортировки --</option>
+                        <option value="name_asc" th:selected="${currentSort == 'name_asc'}">Название (А-Я)</option>
+                        <option value="name_desc" th:selected="${currentSort == 'name_desc'}">Название (Я-А)</option>
+                        <option value="price_asc" th:selected="${currentSort == 'price_asc'}">Цена (по возрастанию)</option>
+                        <option value="price_desc" th:selected="${currentSort == 'price_desc'}">Цена (по убыванию)</option>
+                    </select>
+                </div>
+                <div class="form-group col-md-3">
+                    <a href="/products" class="btn btn-outline-primary rounded-pill px-4 w-100">
+                        <i class="fas fa-refresh me-2"></i>Сбросить
+                    </a>
+                </div>
             </div>
         </form>
     </div>
 
     <div class="glass-card p-4">
         <h3 class="section-title">
-            <i class="fas fa-grid me-2"></i>Product Collection
+            <i class="fas fa-grid me-2"></i>Коллекция товаров
         </h3>
         <div class="products-grid">
             <div class="product-card" th:each="product : ${products}">
@@ -297,18 +313,18 @@
                 </div>
 
                 <div class="product-price">
-                    $<span th:text="${product.coast}"></span>
+                    <span th:text="${product.coast}"></span> руб.
                 </div>
 
                 <div class="product-actions">
                     <form th:action="@{/cart/add/{id}(id=${product.id})}" method="post" style="display:inline; flex: 1;">
                         <button type="submit" class="btn btn-success">
-                            <i class="fas fa-cart-plus me-1"></i>Add
+                            <i class="fas fa-cart-plus me-1"></i>В корзину
                         </button>
                     </form>
                     <form th:action="@{/products/info/{id}(id=${product.id})}" method="get" style="display:inline; flex: 1;">
                         <button type="submit" class="btn btn-info">
-                            <i class="fas fa-info me-1"></i>Details
+                            <i class="fas fa-info me-1"></i>Подробнее
                         </button>
                     </form>
                 </div>
@@ -317,8 +333,8 @@
 
         <div th:if="${#lists.isEmpty(products)}" class="text-center py-5">
             <i class="fas fa-search fa-3x text-muted mb-3"></i>
-            <h4 class="text-muted">No products found</h4>
-            <p class="text-muted">Try adjusting your search criteria</p>
+            <h4 class="text-muted">Товары не найдены</h4>
+            <p class="text-muted">Попробуйте изменить критерии поиска</p>
         </div>
     </div>
 </div>
@@ -327,6 +343,34 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
 <script src="/js/pusheen.js"></script>
+
+<script>
+(function() {
+    let searchTimeout;
+    const searchInput = document.getElementById('name');
+    const sortSelect = document.getElementById('sort');
+    const searchForm = document.getElementById('searchForm');
+    
+    function performSearch() {
+        clearTimeout(searchTimeout);
+        searchTimeout = setTimeout(function() {
+            searchForm.submit();
+        }, 300); // Задержка 300ms перед отправкой запроса
+    }
+    
+    // Автоматический поиск при вводе текста
+    if (searchInput) {
+        searchInput.addEventListener('input', performSearch);
+    }
+    
+    // Автоматическая отправка при изменении сортировки
+    if (sortSelect) {
+        sortSelect.addEventListener('change', function() {
+            searchForm.submit();
+        });
+    }
+})();
+</script>
 
 </body>
 </html>

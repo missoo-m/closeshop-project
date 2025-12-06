@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Users</title>
+    <title>Пользователи</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
@@ -245,43 +245,43 @@
 <div class="container">
     <div class="header-section">
         <h1 class="display-4 font-weight-bold mb-3">
-            <i class="fas fa-users me-3"></i>User Management
+            <i class="fas fa-users me-3"></i>Управление пользователями
         </h1>
-        <p class="lead mb-4">Manage all users in the system</p>
+        <p class="lead mb-4">Управление всеми пользователями в системе</p>
     </div>
 
     <div class="glass-card p-4 mb-4">
         <h3 class="section-title">
-            <i class="fas fa-chart-bar me-2"></i>User Statistics
+            <i class="fas fa-chart-bar me-2"></i>Статистика пользователей
         </h3>
         <div class="stats-grid">
             <div class="stat-card">
                 <div class="stat-number" th:text="${#lists.size(users)}">0</div>
-                <div class="stat-label">Total Users</div>
+                <div class="stat-label">Всего пользователей</div>
             </div>
             <div class="stat-card">
                 <div class="stat-number" th:text="${#lists.size(users.?[role == 'ROLE_ADMIN'])}">0</div>
-                <div class="stat-label">Administrators</div>
+                <div class="stat-label">Администраторов</div>
             </div>
             <div class="stat-card">
                 <div class="stat-number" th:text="${#lists.size(users.?[role == 'ROLE_USER'])}">0</div>
-                <div class="stat-label">Regular Users</div>
+                <div class="stat-label">Обычных пользователей</div>
             </div>
         </div>
     </div>
 
     <div class="glass-card p-4 mb-4">
         <h3 class="section-title">
-            <i class="fas fa-list me-2"></i>All Users
+            <i class="fas fa-list me-2"></i>Все пользователи
         </h3>
         <div class="table-responsive">
             <table class="table table-modern">
                 <thead>
                 <tr>
                     <th>ID</th>
-                    <th>Username</th>
-                    <th>Password</th>
-                    <th>Role</th>
+                    <th>Имя пользователя</th>
+                    <th>Пароль</th>
+                    <th>Роль</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -295,15 +295,15 @@
                     <td>
                         <span th:if="${user.role == 'ROLE_ADMIN'}"
                               class="role-badge role-admin">
-                            <i class="fas fa-crown me-1"></i>Administrator
+                            <i class="fas fa-crown me-1"></i>Администратор
                         </span>
                         <span th:if="${user.role == 'ROLE_USER'}"
                               class="role-badge role-user">
-                            <i class="fas fa-user me-1"></i>User
+                            <i class="fas fa-user me-1"></i>Пользователь
                         </span>
                         <span th:if="${user.role == 'ROLE_ADMIN, ROLE_USER'}"
                               class="role-badge role-super">
-                            <i class="fas fa-star me-1"></i>Super Admin
+                            <i class="fas fa-star me-1"></i>Супер администратор
                         </span>
                     </td>
                 </tr>
@@ -314,31 +314,31 @@
 
     <div class="create-user-section">
         <h3 class="section-title">
-            <i class="fas fa-user-plus me-2"></i>Create New User
+            <i class="fas fa-user-plus me-2"></i>Создать нового пользователя
         </h3>
         <form action="/user/create" method="post">
             <div class="form-row">
                 <div class="form-group col-md-3">
-                    <label for="username" class="font-weight-bold text-dark">Username</label>
+                    <label for="username" class="font-weight-bold text-dark">Имя пользователя</label>
                     <input type="text" name="username" id="username" class="form-control form-control-modern"
-                           placeholder="Enter username" required>
+                           placeholder="Введите имя пользователя" required>
                 </div>
                 <div class="form-group col-md-3">
-                    <label for="password" class="font-weight-bold text-dark">Password</label>
+                    <label for="password" class="font-weight-bold text-dark">Пароль</label>
                     <input type="text" name="password" id="password" class="form-control form-control-modern"
-                           placeholder="Enter password" required>
+                           placeholder="Введите пароль" required>
                 </div>
                 <div class="form-group col-md-3">
-                    <label for="role" class="font-weight-bold text-dark">Role</label>
+                    <label for="role" class="font-weight-bold text-dark">Роль</label>
                     <select name="role" id="role" class="form-control form-control-modern">
-                        <option value="ROLE_ADMIN">Administrator</option>
-                        <option value="ROLE_USER">Regular User</option>
-                        <option value="ROLE_ADMIN, ROLE_USER">Super Administrator</option>
+                        <option value="ROLE_ADMIN">Администратор</option>
+                        <option value="ROLE_USER">Обычный пользователь</option>
+                        <option value="ROLE_ADMIN, ROLE_USER">Супер администратор</option>
                     </select>
                 </div>
                 <div class="form-group col-md-3 d-flex align-items-end">
                     <button type="submit" class="btn btn-modern w-100">
-                        <i class="fas fa-plus me-2"></i>Add User
+                        <i class="fas fa-plus me-2"></i>Добавить пользователя
                     </button>
                 </div>
             </div>
@@ -347,7 +347,7 @@
 
     <div class="text-center mt-4">
         <a href="/user/info" class="btn btn-outline-modern">
-            <i class="fas fa-arrow-left me-2"></i>Back to User Info
+            <i class="fas fa-arrow-left me-2"></i>Назад к информации о пользователе
         </a>
     </div>
 </div>

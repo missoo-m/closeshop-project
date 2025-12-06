@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Admin Products</title>
+    <title>Админ - Товары</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
@@ -163,75 +163,103 @@
             background-size: 16px;
             padding-right: 45px;
         }
+        
+        #sort {
+            cursor: pointer;
+        }
     </style>
 </head>
 <body>
 <div class="container">
     <div class="header-section text-center">
         <h1 class="display-4 font-weight-bold mb-3">
-            <i class="fas fa-cogs me-3"></i>Admin Products
+            <i class="fas fa-cogs me-3"></i>Администрирование товаров
         </h1>
-        <p class="lead mb-4">Manage your product catalog with ease</p>
+        <p class="lead mb-4">Управляйте каталогом товаров с легкостью</p>
         <a href="/products" class="btn btn-light btn-lg rounded-pill px-4">
-            <i class="fas fa-eye me-2"></i>View Products
+            <i class="fas fa-eye me-2"></i>Просмотр товаров
         </a>
     </div>
 
     <div class="glass-card p-4 mb-4">
         <h3 class="section-title">
-            <i class="fas fa-plus-circle me-2"></i>Create New Product
+            <i class="fas fa-plus-circle me-2"></i>Создать новый товар
         </h3>
         <form action="/products/create" method="post">
             <div class="form-group">
-                <label for="productName" class="font-weight-bold text-dark">Product Name</label>
+                <label for="productName" class="font-weight-bold text-dark">Название товара</label>
                 <input type="text" name="name" id="productName" class="form-control form-control-modern"
-                       placeholder="Enter product name" required>
+                       placeholder="Введите название товара" required>
             </div>
             <div class="form-row">
                 <div class="form-group col-md-4">
-                    <label for="productSize" class="font-weight-bold text-dark">Size</label>
+                    <label for="productSize" class="font-weight-bold text-dark">Размер</label>
                     <select name="size" id="productSize" class="form-control form-control-modern">
-                        <option value="xs">XS - Extra Small</option>
-                        <option value="s">S - Small</option>
-                        <option value="m">M - Medium</option>
-                        <option value="l">L - Large</option>
-                        <option value="xl">XL - Extra Large</option>
+                        <option value="xs">XS - Очень маленький</option>
+                        <option value="s">S - Маленький</option>
+                        <option value="m">M - Средний</option>
+                        <option value="l">L - Большой</option>
+                        <option value="xl">XL - Очень большой</option>
                     </select>
                 </div>
                 <div class="form-group col-md-4">
-                    <label for="productType" class="font-weight-bold text-dark">Type</label>
+                    <label for="productType" class="font-weight-bold text-dark">Тип</label>
                     <select name="type" id="productType" class="form-control form-control-modern">
-                        <option value="PANTS">Pants</option>
-                        <option value="SHORTS">Shorts</option>
-                        <option value="SNEAKERS">Sneakers</option>
-                        <option value="LONGSLEEVE">Longsleeve</option>
+                        <option value="PANTS">Брюки</option>
+                        <option value="SHORTS">Шорты</option>
+                        <option value="JEANS">Джинсы</option>
+                        <option value="T-SHIRT">Футболка</option>
+                        <option value="SHIRT">Рубашка</option>
+                        <option value="LONGSLEEVE">Длинный рукав</option>
+                        <option value="SWEATER">Свитер</option>
+                        <option value="HOODIE">Толстовка</option>
+                        <option value="DRESS">Платье</option>
+                        <option value="SKIRT">Юбка</option>
+                        <option value="JACKET">Куртка</option>
+                        <option value="COAT">Пальто</option>
+                        <option value="SNEAKERS">Кроссовки</option>
+                        <option value="BOOTS">Ботинки</option>
+                        <option value="CAP">Головной убор</option>
                     </select>
                 </div>
                 <div class="form-group col-md-4">
-                    <label for="productCoast" class="font-weight-bold text-dark">Price ($)</label>
+                    <label for="productCoast" class="font-weight-bold text-dark">Цена (руб.)</label>
                     <input type="number" name="coast" id="productCoast" class="form-control form-control-modern"
                            placeholder="0.00" step="0.01" min="0" required>
                 </div>
             </div>
             <button type="submit" class="btn btn-modern">
-                <i class="fas fa-plus me-2"></i>Add Product
+                <i class="fas fa-plus me-2"></i>Добавить товар
             </button>
         </form>
     </div>
 
     <div class="glass-card p-4">
-        <h3 class="section-title">
-            <i class="fas fa-list me-2"></i>Manage Products
-        </h3>
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h3 class="section-title mb-0">
+                <i class="fas fa-list me-2"></i>Управление товарами
+            </h3>
+            <form action="/products/add" method="get" class="d-flex align-items-center">
+                <label for="sort" class="font-weight-bold text-dark mr-2 mb-0">Сортировка:</label>
+                <select name="sort" id="sort" class="form-control form-control-modern mr-2" style="width: auto; min-width: 200px;"
+                        onchange="this.form.submit()">
+                    <option value="">-- Без сортировки --</option>
+                    <option value="name_asc" th:selected="${currentSort == 'name_asc'}">Название (А-Я)</option>
+                    <option value="name_desc" th:selected="${currentSort == 'name_desc'}">Название (Я-А)</option>
+                    <option value="price_asc" th:selected="${currentSort == 'price_asc'}">Цена (по возрастанию)</option>
+                    <option value="price_desc" th:selected="${currentSort == 'price_desc'}">Цена (по убыванию)</option>
+                </select>
+            </form>
+        </div>
         <div class="table-responsive">
             <table class="table table-modern">
                 <thead>
                 <tr>
-                    <th>Name</th>
-                    <th>Size</th>
-                    <th>Type</th>
-                    <th>Price</th>
-                    <th>Actions</th>
+                    <th>Название</th>
+                    <th>Размер</th>
+                    <th>Тип</th>
+                    <th>Цена</th>
+                    <th>Действия</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -239,11 +267,16 @@
                     <td th:text="${product.name}" class="font-weight-bold"></td>
                     <td th:text="${product.size}" class="text-uppercase"></td>
                     <td th:text="${product.type}"></td>
-                    <td class="text-success font-weight-bold">$<span th:text="${product.coast}"></span></td>
+                    <td class="text-success font-weight-bold"><span th:text="${product.coast}"></span> руб.</td>
                     <td class="action-buttons">
+                        <form th:action="@{/products/edit/{id}(id=${product.id})}" method="get" style="display:inline;">
+                            <button type="submit" class="btn btn-warning btn-sm">
+                                <i class="fas fa-edit me-1"></i>Редактировать
+                            </button>
+                        </form>
                         <form th:action="@{/products/delete/{id}(id=${product.id})}" method="post" style="display:inline;">
                             <button type="submit" class="btn btn-danger btn-sm">
-                                <i class="fas fa-trash me-1"></i>Delete
+                                <i class="fas fa-trash me-1"></i>Удалить
                             </button>
                         </form>
                     </td>
@@ -255,7 +288,7 @@
 
     <div class="text-center mt-4">
         <a href="/user/info" class="btn btn-outline-dark rounded-pill px-4">
-            <i class="fas fa-arrow-left me-2"></i>Back to User Info
+            <i class="fas fa-arrow-left me-2"></i>Назад к информации о пользователе
         </a>
     </div>
 </div>
