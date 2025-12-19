@@ -41,14 +41,13 @@ class UserControllerTest {
     }
 
     @Test
-   // @WithMockUser(roles = "ADMIN") // Симулируем, что запрос приходит от пользователя с ролью ADMIN
-    void testSaveUser() throws Exception {
+   void testSaveUser() throws Exception {
         // Создаем пользователя с моком корзины
         User user = new User();
         user.setUsername("testuser");
         user.setPassword("password");
         user.setRole("ROLE_USER");
-        user.setCart(mockCart); // Присваиваем мока корзины
+        user.setCart(mockCart);
 
         // Мокаем поведение userService
         doNothing().when(userService).saveUser(user);
@@ -74,7 +73,6 @@ class UserControllerTest {
     }
 
     @Test
-  //  @WithMockUser(roles = "ADMIN")   // Симулируем роль администратора
     void testShowUsers() throws Exception {
         // Создаем список пользователей с моком корзины
         List<User> users = Arrays.asList(
@@ -93,7 +91,6 @@ class UserControllerTest {
     }
 
     @Test
-    //@WithMockUser(roles = "USER") // Симулируем роль пользователя
     void testUserInfo() throws Exception {
         User user = new User(3 ,"testuser", "password", "ROLE_USER", mockCart);
         user.setId(1);
@@ -109,7 +106,6 @@ class UserControllerTest {
     }
 
     @Test
-    //@WithMockUser(roles = "USER") // Симулируем роль пользователя
     void testUserInfoRedirectIfNotLoggedIn() throws Exception {
         when(userService.getCurrentUserId()).thenReturn(null);
 
@@ -118,14 +114,4 @@ class UserControllerTest {
                 .andExpect(redirectedUrl("/login"));
     }
 
-  /*  @Test
-    void testSignUp() throws Exception {
-        mockMvc.perform(get("/user/signup")
-                .param("username", "testuser")
-                .param("password", "password1")
-                .param("confirmPassword", "password2"))
-                .andExpect(status().isCreated())
-                .andExpect(redirectedUrl("/user/create/u"))
-                .andExpect(flash().attribute("error", "Passwords do not match!"));
-    }*/
 }
