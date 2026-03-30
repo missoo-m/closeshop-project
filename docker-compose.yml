@@ -9,9 +9,17 @@ services:
       postgres:
         condition: service_healthy
     environment:
-      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/products
-      SPRING_DATASOURCE_USERNAME: postgres
-      SPRING_DATASOURCE_PASSWORD: 1234
+      SPRING_PROFILES_ACTIVE: prod
+      DB_URL: jdbc:postgresql://postgres:5432/products
+      DB_USERNAME: postgres
+      DB_PASSWORD: 1234
+    healthcheck:
+      # Проверка доступности actuator health для внешних/CI healthcheck'ов
+      test: ["CMD-SHELL", "wget -qO- http://localhost:8080/actuator/health || exit 1"]
+      interval: 30s
+      timeout: 10s
+      start_period: 40s
+      retries: 5
 
   postgres:
     image: postgres:15-alpine
@@ -22,7 +30,7 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U dytni -d products"]
+      test: ["CMD-SHELL", "pg_isready -U postgres -d products"]
       interval: 5s
       timeout: 5s
       retries: 10
