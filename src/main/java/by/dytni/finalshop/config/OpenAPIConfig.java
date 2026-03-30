@@ -5,7 +5,7 @@ import io.swagger.v3.oas.models.info.Info;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-@Configuration //создавать и конфигурировать бины (объекты)
+@Configuration
 public class OpenAPIConfig {
 
     @Bean //методдолжен создать и зарегистрировать бин в контексте приложения

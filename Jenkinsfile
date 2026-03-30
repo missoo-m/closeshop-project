@@ -8,7 +8,9 @@ pipeline {
         }
         stage('Build') {
             steps {
-                sh 'mvn clean install'
+                withMaven(maven: 'M3_HOME') {
+                    sh 'mvn clean install'
+                }
             }
         }
         stage('Test') {
@@ -55,8 +57,12 @@ pipeline {
         stage('Deploy') {
             steps {
                 sh 'target/finalShop-0.0.2-SNAPSHOT.jar user@server:/deploy/path'
+                withMaven(maven: 'M3_HOME') {
+                    sh 'mvn test'
+                }
             }
         }
+
     }
     post {
         always {
