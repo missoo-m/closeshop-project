@@ -6,18 +6,23 @@ pipeline {
                 git 'https://github.com/missoo-m/closeshop-project.git'
             }
         }
+        
         stage('Build') {
             steps {
                 withMaven(maven: 'M3_HOME') {
-                    sh 'mvn clean install'
+                    sh 'mvn clean install -DskipTests'
                 }
             }
         }
+        
         stage('Test') {
             steps {
-                sh 'mvn test'
+                withMaven(maven: 'M3_HOME') {
+                    sh 'mvn test'
+                }
             }
         }
+        
         stage('Docker Build') {
             when {
                 expression { return fileExists('Dockerfile') }
@@ -26,6 +31,7 @@ pipeline {
                 sh 'docker build -t finalshop-api:latest .'
             }
         }
+        
         stage('Docker Integration Test - Actuator Health') {
             when {
                 expression { return fileExists('docker-compose.yml') }
@@ -42,31 +48,31 @@ pipeline {
                       status="$(docker inspect -f '{{.State.Health.Status}}' "$cid")"
                       echo "Actuator health status: $status"
                       if [ "$status" = "healthy" ]; then
+                        echo " Application is healthy!"
                         exit 0
                       fi
                       sleep 2
                       i=$((i+1))
                     done
 
-                    echo "Actuator health did not become healthy in time"
+                    echo " Actuator health did not become healthy in time"
                     docker inspect -f '{{.State.Health.Status}}' "$cid"
                     exit 1
                 '''
             }
         }
-        stage('Deploy') {
-            steps {
-                sh 'target/finalShop-0.0.2-SNAPSHOT.jar user@server:/deploy/path'
-                withMaven(maven: 'M3_HOME') {
-                    sh 'mvn test'
-                }
-            }
-        }
-
     }
+    
     post {
         always {
             sh 'docker compose down -v --remove-orphans || true'
+            cleanWs()
+        }
+        success {
+            echo ' Pipeline completed successfully!'
+        }
+        failure {
+            echo ' Pipeline failed!'
         }
     }
 }
