@@ -12,16 +12,13 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.util.ArrayList;
 import java.util.Optional;
 
-
 @Service
-@RequiredArgsConstructor //автоматически генерирует конструктор для всех final полей
+@RequiredArgsConstructor 
 @Slf4j //автоматически создает статическое поле log
 public class CartService {
-    @Autowired //Spring автоматически находит бин нужного типа и внедряет его в эту точку
+    @Autowired 
     private CartRepository cartRepository;
 
     @Autowired
@@ -36,6 +33,7 @@ public class CartService {
     @Transactional
     public void addProductToCart(Integer productId) throws Exception {
         Integer userId = userService.getCurrentUserId();
+        log.info("Adding product {} to cart for user {}", productId, userId);
 
         Optional<User> optionalUser = userRepository.findById(userId);
         if (optionalUser.isEmpty()) {
@@ -50,20 +48,9 @@ public class CartService {
         Product product = optionalProduct.get();
 
         Cart cart = user.getCart();
-       /* if (cart == null) {
-            cart = new Cart();
-            cart.setUser(user); // Связываем корзину с пользователем
-            cart.setProducts(new ArrayList<>()); // Инициализируем список продуктов
-            user.setCart(cart); // Связываем пользователя с корзиной
-            cartRepository.save(cart); // Сохраняем новую корзину
-        }*/
-
-        cart.getProducts().add(product); // Добавляем продукт в корзину
-        cartRepository.saveAndFlush(cart); // Сохраняем обновленную корзину
+        cart.getProducts().add(product);
+        cartRepository.saveAndFlush(cart); 
     }
-
-
-
 
     @Transactional
     public void removeProductFromCart(Integer productId) throws Exception {

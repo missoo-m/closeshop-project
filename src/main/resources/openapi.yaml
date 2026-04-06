@@ -1,0 +1,732 @@
+openapi: 3.0.0
+info:
+  title: Магазин одежды API
+  version: 1.0.0
+  contact:
+    name: Support
+    email: support@finalshop.com
+
+servers:
+  - url: http://localhost:8080
+    description: Development server
+  - url: http://localhost:8081
+    description: Docker server
+
+tags:
+  - name: Products
+    description: Управление товарами
+  - name: Cart
+    description: Управление корзиной
+  - name: Users
+    description: Управление пользователями
+  - name: Authentication
+    description: Аутентификация
+  - name: Monitoring
+    description: Мониторинг (Actuator)
+
+paths:
+  /products:
+    get:
+      tags:
+        - Products
+      summary: Получить список товаров
+      description: Возвращает список всех товаров с фильтрацией по имени и сортировкой
+      operationId: getProducts
+      
+      parameters:
+        - name: name
+          in: query
+          description: Фильтр по названию товара
+          required: false
+          schema:
+            type: string
+            example: футболка
+        - name: sort
+          in: query
+          description: Сортировка товаров
+          required: false
+          schema:
+            type: string
+            enum:
+              - name_asc
+              - name_desc
+              - price_asc
+              - price_desc
+            default: name_asc
+      responses:
+        '200':
+          description: Успешный ответ со списком товаров
+          content:
+            text/html:
+              schema:
+                type: string
+                example: "<html><body>...</body></html>"
+        '500':
+          description: Внутренняя ошибка сервера
+          content:
+            text/html:
+              schema:
+                type: string
+        '404':
+          description: Товары не найдены
+          content:
+            text/html:
+              schema:
+                type: string
+
+  /products/info/{id}:
+    get:
+      tags:
+        - Products
+      summary: Получить информацию о товаре
+      description: Возвращает детальную информацию о конкретном товаре
+      operationId: getProductById
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID товара
+          schema:
+            type: integer
+            format: int32
+            minimum: 1
+      responses:
+        '200':
+          description: Страница с информацией о товаре
+          content:
+            text/html:
+              schema:
+                type: string
+        '404':
+          description: Товар не найден
+          content:
+            text/html:
+              schema:
+                type: string
+                example: "<html><body>Product not found</body></html>"
+
+  /products/add:
+    get:
+      tags:
+        - Products
+      summary: Страница добавления товара
+      description: Возвращает форму для добавления нового товара. Доступно только администраторам
+      operationId: showAddProductForm
+      security:
+        - cookieAuth: []
+      responses:
+        '200':
+          description: Форма добавления товара
+          content:
+            text/html:
+              schema:
+                type: string
+        '401':
+          description: Не авторизован
+          content:
+            text/html:
+              schema:
+                type: string
+        '403':
+          description: Доступ запрещен (требуется роль ADMIN)
+          content:
+            text/html:
+              schema:
+                type: string
+
+  /products/create:
+    post:
+      tags:
+        - Products
+      summary: Создать новый товар
+      description: Создает новый товар в каталоге. Доступно только администраторам
+      operationId: createProduct
+      security:
+        - cookieAuth: []
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/ProductInput'
+      responses:
+        '302':
+          description: Перенаправление на страницу управления товарами
+          headers:
+            Location:
+              schema:
+                type: string
+                example: /products/add
+        '401':
+          description: Не авторизован
+        '403':
+          description: Доступ запрещен
+
+  /products/edit/{id}:
+    get:
+      tags:
+        - Products
+      summary: Страница редактирования товара
+      description: Возвращает форму для редактирования товара. Доступно только администраторам
+      operationId: showEditProductForm
+      security:
+        - cookieAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Форма редактирования товара
+          content:
+            text/html:
+              schema:
+                type: string
+        '404':
+          description: Товар не найден
+          content:
+            text/html:
+              schema:
+                type: string
+
+  /products/update/{id}:
+    post:
+      tags:
+        - Products
+      summary: Обновить товар
+      description: Обновляет информацию о товаре. Доступно только администраторам
+      operationId: updateProduct
+      security:
+        - cookieAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/ProductInput'
+      responses:
+        '302':
+          description: Перенаправление на страницу управления товарами
+          headers:
+            Location:
+              schema:
+                type: string
+                example: /products/add
+
+  /products/delete/{id}:
+    post:
+      tags:
+        - Products
+      summary: Удалить товар
+      description: Удаляет товар из каталога. Доступно только администраторам
+      operationId: deleteProduct
+      security:
+        - cookieAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '302':
+          description: Перенаправление на страницу управления товарами
+          headers:
+            Location:
+              schema:
+                type: string
+                example: /products/add
+
+  /cart/add/{id}:
+    post:
+      tags:
+        - Cart
+      summary: Добавить товар в корзину
+      description: Добавляет указанный товар в корзину текущего пользователя
+      operationId: addToCart
+      security:
+        - cookieAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID товара
+          schema:
+            type: integer
+      responses:
+        '302':
+          description: Перенаправление на страницу товаров
+          headers:
+            Location:
+              schema:
+                type: string
+                example: /products
+        '401':
+          description: Не авторизован
+
+  /cart/delete/{id}:
+    post:
+      tags:
+        - Cart
+      summary: Удалить товар из корзины
+      description: Удаляет указанный товар из корзины текущего пользователя
+      operationId: removeFromCart
+      security:
+        - cookieAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID товара
+          schema:
+            type: integer
+      responses:
+        '302':
+          description: Перенаправление на страницу профиля
+          headers:
+            Location:
+              schema:
+                type: string
+                example: /user/info
+
+  /cart/buy:
+    post:
+      tags:
+        - Cart
+      summary: Оформить покупку
+      description: Оформляет покупку всех товаров в корзине и очищает корзину
+      operationId: completePurchase
+      security:
+        - cookieAuth: []
+      responses:
+        '302':
+          description: Перенаправление на страницу успешной покупки
+          headers:
+            Location:
+              schema:
+                type: string
+                example: /purchase-complete
+        '401':
+          description: Не авторизован
+
+  /purchase-complete:
+    get:
+      tags:
+        - Cart
+      summary: Страница успешной покупки
+      description: Показывает страницу подтверждения успешной покупки
+      operationId: purchaseComplete
+      security:
+        - cookieAuth: []
+      responses:
+        '200':
+          description: Страница подтверждения покупки
+          content:
+            text/html:
+              schema:
+                type: string
+
+  /user/signup:
+    get:
+      tags:
+        - Users
+      summary: Страница регистрации
+      description: Возвращает форму регистрации нового пользователя
+      operationId: showSignupForm
+      responses:
+        '200':
+          description: Форма регистрации
+          content:
+            text/html:
+              schema:
+                type: string
+
+  /user/create/u:
+    post:
+      tags:
+        - Users
+      summary: Регистрация пользователя
+      description: Создает нового пользователя с ролью ROLE_USER
+      operationId: signupUser
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                username:
+                  type: string
+                  example: john_doe
+                password:
+                  type: string
+                  format: password
+                confirmPassword:
+                  type: string
+                  format: password
+              required:
+                - username
+                - password
+                - confirmPassword
+      responses:
+        '302':
+          description: Перенаправление на страницу входа
+          headers:
+            Location:
+              schema:
+                type: string
+                example: /login
+
+  /user/info:
+    get:
+      tags:
+        - Users
+      summary: Профиль пользователя
+      description: Возвращает страницу профиля текущего пользователя
+      operationId: userInfo
+      security:
+        - cookieAuth: []
+      responses:
+        '200':
+          description: Страница профиля пользователя
+          content:
+            text/html:
+              schema:
+                type: string
+        '302':
+          description: Перенаправление на страницу входа
+          headers:
+            Location:
+              schema:
+                type: string
+                example: /login
+
+  /user/show:
+    get:
+      tags:
+        - Users
+      summary: Список пользователей
+      description: Возвращает страницу со списком всех пользователей. Доступно только администраторам
+      operationId: showUsers
+      security:
+        - cookieAuth: []
+      responses:
+        '200':
+          description: Список пользователей
+          content:
+            text/html:
+              schema:
+                type: string
+        '403':
+          description: Доступ запрещен
+
+  /user/create:
+    post:
+      tags:
+        - Users
+      summary: Создать пользователя
+      description: Создает нового пользователя с указанной ролью. Доступно только администраторам
+      operationId: createUser
+      security:
+        - cookieAuth: []
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                username:
+                  type: string
+                password:
+                  type: string
+                role:
+                  type: string
+                  enum:
+                    - ROLE_USER
+                    - ROLE_ADMIN
+                    - ROLE_ADMIN, ROLE_USER
+      responses:
+        '200':
+          description: Пользователь создан
+          content:
+            text/html:
+              schema:
+                type: string
+
+  /login:
+    get:
+      tags:
+        - Authentication
+      summary: Страница входа
+      description: Возвращает форму для входа в систему
+      operationId: showLoginForm
+      responses:
+        '200':
+          description: Форма входа
+          content:
+            text/html:
+              schema:
+                type: string
+    post:
+      tags:
+        - Authentication
+      summary: Аутентификация
+      description: Аутентифицирует пользователя и создает сессию
+      operationId: login
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                username:
+                  type: string
+                password:
+                  type: string
+              required:
+                - username
+                - password
+      responses:
+        '302':
+          description: Перенаправление на страницу товаров
+          headers:
+            Location:
+              schema:
+                type: string
+                example: /products
+        '401':
+          description: Неверные учетные данные
+
+  /logout:
+    post:
+      tags:
+        - Authentication
+      summary: Выход из системы
+      description: Завершает сессию пользователя
+      operationId: logout
+      security:
+        - cookieAuth: []
+      responses:
+        '302':
+          description: Перенаправление на страницу входа
+          headers:
+            Location:
+              schema:
+                type: string
+                example: /login
+
+  /actuator/health:
+    get:
+      tags:
+        - Monitoring
+      summary: Health check
+      description: Проверяет состояние приложения (БД, дисковое пространство)
+      operationId: healthCheck
+      responses:
+        '200':
+          description: Приложение здорово
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HealthResponse'
+
+  /actuator/info:
+    get:
+      tags:
+        - Monitoring
+      summary: Информация о приложении
+      description: Возвращает информацию о Java, OS и приложении
+      operationId: info
+      responses:
+        '200':
+          description: Информация о приложении
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InfoResponse'
+
+  /actuator/metrics:
+    get:
+      tags:
+        - Monitoring
+      summary: Метрики приложения
+      description: Возвращает список доступных метрик
+      operationId: metrics
+      responses:
+        '200':
+          description: Список метрик
+          content:
+            application/json:
+              schema:
+                type: object
+
+  /actuator/env:
+    get:
+      tags:
+        - Monitoring
+      summary: Переменные окружения
+      description: Возвращает все переменные окружения приложения
+      operationId: env
+      responses:
+        '200':
+          description: Переменные окружения
+          content:
+            application/json:
+              schema:
+                type: object
+
+components:
+  schemas:
+    Product:
+      type: object
+      description: Модель товара
+      properties:
+        id:
+          type: integer
+          format: int32
+          description: Уникальный идентификатор товара
+          example: 1
+        name:
+          type: string
+          description: Название товара
+          example: Хлопковая футболка
+        type:
+          type: string
+          description: Тип товара
+          enum:
+            - PANTS
+            - SHORTS
+            - JEANS
+            - T_SHIRT
+            - SHIRT
+            - LONGSLEEVE
+            - SWEATER
+            - HOODIE
+            - DRESS
+            - SKIRT
+            - JACKET
+            - COAT
+            - SNEAKERS
+            - BOOTS
+            - CAP
+          example: T_SHIRT
+        coast:
+          type: number
+          format: float
+          description: Цена товара
+          example: 1299.99
+        size:
+          type: string
+          description: Размер товара
+          enum:
+            - xs
+            - s
+            - m
+            - l
+            - xl
+          example: m
+
+    ProductInput:
+      type: object
+      properties:
+        name:
+          type: string
+        type:
+          type: string
+        coast:
+          type: number
+        size:
+          type: string
+
+    User:
+      type: object
+      description: Модель пользователя
+      properties:
+        id:
+          type: integer
+        username:
+          type: string
+          example: john_doe
+        role:
+          type: string
+          enum:
+            - ROLE_USER
+            - ROLE_ADMIN
+          example: ROLE_USER
+        cart:
+          $ref: '#/components/schemas/Cart'
+
+    Cart:
+      type: object
+      description: Корзина пользователя
+      properties:
+        id:
+          type: integer
+        products:
+          type: array
+          items:
+            $ref: '#/components/schemas/Product'
+        totalCost:
+          type: number
+          format: float
+          description: Общая стоимость
+
+    HealthResponse:
+      type: object
+      properties:
+        status:
+          type: string
+          enum:
+            - UP
+            - DOWN
+          example: UP
+        components:
+          type: object
+          properties:
+            db:
+              type: object
+            diskSpace:
+              type: object
+            ping:
+              type: object
+
+    InfoResponse:
+      type: object
+      properties:
+        java:
+          type: object
+          properties:
+            version:
+              type: string
+            vendor:
+              type: object
+            runtime:
+              type: object
+            jvm:
+              type: object
+        os:
+          type: object
+          properties:
+            name:
+              type: string
+            version:
+              type: string
+            arch:
+              type: string
+
+  securitySchemes:
+    cookieAuth:
+      type: apiKey
+      in: cookie
+      name: JSESSIONID
+      description: Spring Security session cookie

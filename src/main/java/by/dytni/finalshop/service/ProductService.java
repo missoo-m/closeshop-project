@@ -24,14 +24,12 @@ public class ProductService {
         boolean hasSearch = name != null && !name.isEmpty();
         List<Product> products;
         
-        // Получаем продукты
         if (hasSearch) {
             products = productRepository.findByNameContainingIgnoreCase(name);
         } else {
             products = productRepository.findAll();
         }
         
-        // Применяем сортировку
         if (sortBy != null && !sortBy.isEmpty()) {
             switch (sortBy) {
                 case "name_asc":

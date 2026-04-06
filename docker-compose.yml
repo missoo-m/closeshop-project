@@ -14,7 +14,6 @@ services:
       DB_USERNAME: postgres
       DB_PASSWORD: 1234
     healthcheck:
-      # Проверка доступности actuator health для внешних/CI healthcheck'ов
       test: ["CMD-SHELL", "wget -qO- http://localhost:8080/actuator/health || exit 1"]
       interval: 30s
       timeout: 10s
@@ -34,3 +33,5 @@ services:
       interval: 5s
       timeout: 5s
       retries: 10
+volumes:
+  postgres_data:
